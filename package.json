@@ -1,0 +1,13 @@
+{
+  "name": "webseechapi",
+  "version": "1.0.0",
+  "description": "Web Speech API on Node.js on Docker",
+  "author": "Asad. Gharighi <a.gharighi@outlook.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}

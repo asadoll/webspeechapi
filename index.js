@@ -34,7 +34,7 @@ const dictate = () => {
           getTheWeather(speechToText);
       };
     }
-  }
+  };
 }
 
 const speak = (action) => {
