@@ -3,6 +3,7 @@
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 const synth = window.speechSynthesis;
 const recognition = new SpeechRecognition();
+recognition.lang = 'fa-IR';
 
 const icon = document.querySelector('i.fa.fa-microphone');
 let paragraph = document.createElement('p');
@@ -24,34 +25,69 @@ const dictate = () => {
 
     if (event.results[0].isFinal) {
 
-      if (speechToText.includes('what is the time')) {
+      // if (speechToText.includes('what is the time')) {
+      if (speechToText.includes('ساعت چنده')) {
           speak(getTime);
       };
       
-      if (speechToText.includes('what is today\'s date')) {
+      if (speechToText.includes('امروز چه روزيه')) {
           speak(getDate);
       };
       
-      if (speechToText.includes('what is the weather in')) {
+      if (speechToText.includes('هوای تهران چطوره')) {
           getTheWeather(speechToText);
       };
     }
   };
+};
+
+var voiceSelect = document.querySelector('select');
+var voices = [];
+
+function populateVoiceList() {
+    voices = synth.getVoices();
+    var selectedIndex = voiceSelect.selectedIndex < 0 ? 0 : voiceSelect.selectedIndex;
+    voiceSelect.innerHTML = '';
+    for(var i = 0; i < voices.length ; i++) {
+        var option = document.createElement('option');
+        option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+        
+        if(voices[i].default) {
+            option.textContent += ' -- DEFAULT';
+        }
+
+        option.setAttribute('data-lang', voices[i].lang);
+        option.setAttribute('data-name', voices[i].name);
+        voiceSelect.appendChild(option);
+    }
+    voiceSelect.selectedIndex = selectedIndex;
+}
+
+populateVoiceList();
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
 }
 
 const speak = (action) => {
-  utterThis = new SpeechSynthesisUtterance(action());
+  const utterThis = new SpeechSynthesisUtterance(action());
+  var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+  for(var i = 0; i < voices.length ; i++) {
+    if(voices[i].name === selectedOption) {
+      utterThis.voice = voices[i];
+    }
+  }
   synth.speak(utterThis);
 };
 
 const getTime = () => {
   const time = new Date(Date.now());
-    return `the time is ${time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
+    return `ساعت ${time.toLocaleString('fa-IR', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
 };
 
 const getDate = () => {
     const time = new Date(Date.now());
-  return `today is ${time.toLocaleDateString()}`;
+    return `today is ${time.toLocaleDateString('fa-IR')}`;
 };
 
 const getTheWeather = (speech) => {
@@ -65,7 +101,7 @@ const getTheWeather = (speech) => {
       synth.speak(utterThis);
       return;
     }
-    utterThis = new SpeechSynthesisUtterance(`the weather condition in ${weather.name} is mostly full of ${weather.weather[0].description} at a temperature of ${weather.main.temp} degrees Celcius`);
+    utterThis = new SpeechSynthesisUtterance(`هوای الآن تهران ${weather.name} is mostly full of ${weather.weather[0].description} at a temperature of ${weather.main.temp} degrees Celcius`);
     synth.speak(utterThis);
   });
 };
