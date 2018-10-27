@@ -12,7 +12,7 @@ container.appendChild(paragraph);
 const sound = document.querySelector('.sound');
 
 icon.addEventListener('click', () => {
-  sound.play();
+  // sound.play();
   dictate();
 });
 
@@ -97,11 +97,11 @@ const getTheWeather = (speech) => {
   })
   .then(function(weather){
     if (weather.cod === '404') {
-      utterThis = new SpeechSynthesisUtterance(`I cannot find the weather for ${speech.split(' ')[5]}`);
+      const utterThis = new SpeechSynthesisUtterance(`هوای. الآن. تهران. خيلی. خوب و نيمه. بارونيه. ${speech.split(' ')[5]}`);
       synth.speak(utterThis);
       return;
     }
-    utterThis = new SpeechSynthesisUtterance(`هوای الآن تهران ${weather.name} is mostly full of ${weather.weather[0].description} at a temperature of ${weather.main.temp} degrees Celcius`);
+    const utterThis = new SpeechSynthesisUtterance(`هوای الآن تهران ${weather.name} is mostly full of ${weather.weather[0].description} at a temperature of ${weather.main.temp} degrees Celcius`);
     synth.speak(utterThis);
   });
 };
